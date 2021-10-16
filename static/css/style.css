@@ -1,0 +1,111 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+header .logo{
+
+}
+
+body{
+    background: url(fondo-login.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'Londrina Solid', cursive;
+}
+
+.form-login{
+    color: white;
+    height: 70vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form{
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    padding: 80px 40px 40px;
+    background: rgb(0, 0, 0, 0.9);
+    border-radius: 10px;
+    box-shadow: 0px 10px 25px rgb(0, 0, 0, 0.5);
+}
+
+.form::before{
+    content: "";
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: rgb(255, 255, 255, 0.08);
+    border-radius: 10px;
+    pointer-events: none;
+}
+.form img{
+    position: absolute;
+    top: -50px;
+    left: calc(50% - 50px);
+    width: 100px;
+    border-radius: 50%;
+    
+}
+
+.form h5{
+    text-align: center;
+    margin-bottom: 2rem;
+    color: rgb(250, 250, 250);
+    font-size: 30px;
+}
+
+.form .control{
+    position: relative;
+    width: 100%;
+}
+
+.form .control input {
+    width: 300px;
+    padding: 10px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    background-color: transparent;
+    color: inherit;
+    justify-items: center;
+}
+
+.form .control label{
+    position: absolute;
+    top:0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: 3s ease-out;
+}
+
+.form-login .control input:focus + label{
+    transform: translateY(-18px);
+    color: rgb(216, 216, 231);
+    font-size: 8rem;
+}
+.form .button{
+    display: block;
+    margin: 5px 5px 5px 5px;
+    border: none;
+    outline: none;
+    background: #137DC5;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+

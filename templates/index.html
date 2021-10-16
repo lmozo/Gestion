@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+    <title>Gestion de empleados</title>
+</head>
+<header>
+    <div class="logo">
+        <img src="{{ url_for('static',filename='img/logo-marfrig.PNG') }}" alt="">
+    </div>
+</header>
+<body>
+    {% block contenido %}
+    <section class="form-login">
+        <form class="form" action="{{ url_for('login') }}" method="POST" novalidate>
+           <img src="{{ url_for('static',filename='img/avatar.png') }}" alt="">
+           {{ form.hidden_tag() }}
+           
+           <h5>Iniciar sesion</h5>
+           <div class="control">
+               {{ form.usuario(class="control", placeholder="Usuario") }}
+           </div>
+           <div class="control">
+               {{ form.password(class="control", placeholder="Contraseña", href="{{ url_for('registro') }}") }}
+           </div>
+           <div class="button">
+               {{ form.ingresar(class="boton, button") }}
+           </div>
+           <p><a href="#" style="color: rgba(255, 255, 255, 0.8);">Olvidastes tu contraseña?</a></p>
+     
+       </form>
+    </section>
+    {% endblock %}
+</body>
+<footer>
+    <section>
+
+    </section>
+
+</footer>
+</html>
