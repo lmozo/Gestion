@@ -38,6 +38,10 @@ def login():
         mensaje += "Todos los datos son requeridos"
         return render_template('index.html',form=FormLogin(), mensaje=mensaje)
 
+@app.route("/menu/")
+def menu():
+    return render_template('menu.html')
+
 @app.route("/crear_usuario/")
 def crear_u():
     return render_template('crear_usuario.html')
