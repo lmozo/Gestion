@@ -33,9 +33,10 @@
            <div class="button">
                {{ form.ingresar(class="boton, button") }}
            </div>
-           <p><a href="#" style="color: rgba(255, 255, 255, 0.8);">Olvidastes tu contraseña?</a></p>
-     
-       </form>
+           <p><a href="{{ url_for('registro') }}" style="color: rgba(255, 255, 255, 0.8);">Registrate aqui</a></p>
+           <br>
+           <p><a href="#" style="color: rgba(255, 255, 255, 0.8);">Olvidaste tu contraseña?</a></p>
+        </form>
     </section>
     {% endblock %}
 </body>
