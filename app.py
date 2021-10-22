@@ -59,6 +59,10 @@ def registro():
             return render_template('registro.html',form=formulario, mensaje = mensaje)
 
 
+@app.route("/menu/")
+def menu():
+    return render_template('menu.html')
+
 @app.route("/crear_usuario/")
 def crear_u():
     mensaje = ""
@@ -78,7 +82,7 @@ def crear_u():
         return render_template('crear_usuario.html',form=formulario, mensaje = mensaje)
 
 
-@app.route("/editar_usuario/")
+"""@app.route("/editar_usuario/")
 def editar_u():
     mensaje = ""
     if request.method == "GET": 
@@ -96,6 +100,7 @@ def editar_u():
         
         return render_template('editar_usuario.html',form=formulario, mensaje = mensaje)
 
+"""
 
 @app.route("/consultar_usuario/")
 def consultar_u():
@@ -122,7 +127,7 @@ def empleado_evaluar():
     return render_template('empleado_evaluar.html')
 
 
-@app.route('/admin_empleados/crear_empleado/', methods=('GET', 'POST'))
+"""@app.route('/admin_empleados/crear_empleado/', methods=('GET', 'POST'))
 def crear_empleado():
     mensaje = ""
     if request.method == "GET": 
@@ -139,7 +144,7 @@ def crear_empleado():
             mensaje += "Todos los datos son requeridos."
         
         return render_template('crear_empleado.html',form=formulario, mensaje = mensaje)
-
+"""
 
 def validar_login(usuario,password):
     for i in range(len(lista_usuarios)):
