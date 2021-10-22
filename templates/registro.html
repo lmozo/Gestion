@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block contenido %}
 <section class="form-login">
-    <form class="form" action="">
+    <form action="{{ url_for('registro')}}" method="POST" novalidate>
         <img src="{{ url_for('static',filename='img/avatar.png') }}" alt="">
 
          <h5>Registro</h5>
@@ -21,7 +21,6 @@
          <input class="button" type="submit" name="registrar" value="Registrar" >
          <label for="Registrar"></label>
         </div>
-         <p class="olvido-contraseña"><a href="#">Olvidastes tu contraseña?</a></p>
     </form>
  </section>
 {% endblock %}

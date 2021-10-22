@@ -9,7 +9,7 @@ header .logo{
 }
 
 body{
-    background: url(fondo-login.jpg);
+    background: url('fondo-login.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     font-family: 'Londrina Solid', cursive;
@@ -94,6 +94,7 @@ body{
     color: rgb(216, 216, 231);
     font-size: 8rem;
 }
+
 .form .button{
     display: block;
     margin: 5px 5px 5px 5px;
