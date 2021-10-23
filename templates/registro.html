@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block contenido %}
 <section class="form-login">
-    <form action="{{ url_for('registro')}}" method="POST" novalidate>
+    <form class="form" action="{{ url_for('registro')}}" method="POST" novalidate>
         <img src="{{ url_for('static',filename='img/avatar.png') }}" alt="">
 
          <h5>Registro</h5>
