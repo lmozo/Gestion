@@ -60,12 +60,12 @@ def registro():
             return render_template('registro.html',form=formulario, mensaje = mensaje)
 
 
-@app.route("/menu/")
+@app.route("/admin/")
 def menu():
-    return render_template('menu.html')
+    return render_template('admin.html')
 
 @app.route("/crear_usuario/")
-def crear_u():
+def crear_usuario():
     mensaje = ""
     if request.method == "GET": 
         formulario = FormUsuario()
@@ -84,7 +84,7 @@ def crear_u():
 
 
 @app.route("/editar_usuario/")
-def editar_u():
+def editar_usuario():
     mensaje = ""
     if request.method == "GET": 
         formulario = FormEditarUsuario()
@@ -103,19 +103,19 @@ def editar_u():
 
 
 @app.route("/consultar_usuario/")
-def consultar_u():
+def consultar_usuario():
     return render_template('consultar_usuario.html')
 
 @app.route("/crear_empleado/")
-def crear_e():
+def crear_empleados():
     return render_template('crear_empleado.html')
 
 @app.route("/editar_empleado/")
-def editar_e():
+def editar_empleado():
     return render_template('editar_empleado.html')
 
 @app.route("/consultar_empleado/")
-def consultar_e():
+def consultar_empleado():
     return render_template('consultar_empleado.html')
 
 @app.route("/evaluacion/")

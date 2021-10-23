@@ -1,85 +1,31 @@
-{% extends 'admin_empleados.html' %}
+{% extends 'admin.html' %}
 {% block contenido %}
-<header>
-    <div class="icon_menu">
-        <i class="fas fa-bars" id="btn_open" ></i>
-    </div>
-</header>
-   
-<div class="menu_side" id="menu-side">
-       
-    <div class="name_page">
-        <i class="fab fa-maxcdn"></i>
-        <h4>Marfrig</h4>
-    </div>
 
-    <div class="option_menu">
-        
-        <a href="#">
-            <div class="options">
-                <i class="fas fa-home" title="Inicio"></i>
-                <h4>Inicio</h4>
-            </div>  
-        </a>
-        <a href="#">
-            <div class="options">
-                <i class="fas fa-users-cog" title="Administracion de Usuarios"></i>
-                <li> <a href="#">Administracion de Usuarios</a>
-                    <ul>
-                    <li>Crear usuario</li>
-                    <li>Consultar usuario</li>
-                    </ul>
-                </li>
-            </div>  
-        </a>
-        <a href="#">
-            <div class="options">
-                <i class="fas fa-users" title="Administracion de Empleados"></i>
-                <li> <a href="#">Administracion de Empleados</a>
-                    <ul>
-                        <li>Crear usuario</li>
-                        <li>Consultar usuario</li>
-                    </ul>
-                </li>
-            </div>  
-        </a>
-        <a href="#">
-            <div class="options">
-                <i class="fas fa-clipboard-list" title="Evaluacion"></i>
-                <li> <a href="#">Evaluacion</a>
-                    <ul>
-                        <li>Empleados a evaluar</li>
-                        <li>Empleados evaluado </li>
-                    </ul>
-                </li>
-            </div>  
-        </a>
-
-    </div>
-
-</div>
 <div class="form-login formulario">
     <form class="form" method="post" onsubmit="">
+        {{ form.hidden_tag() }}
+        
         <h3>Crear usuario</h3>
+        <br>
         <div>
-            <label for="floatingInput">Identificación</label>
-            <input type="text" autocomplete="off">
+            <div class="control">
+               {{ form.usuario(class="control", placeholder="Identificación") }}
         </div>
         <div>
-            <label for="floatingInput">Nombre</label>
-            <input type="text" autocomplete="off">
+            <div class="control">
+                {{ form.usuario(class="control", placeholder="Nombre") }}
         </div>
         <div>
-            <label for="floatingInput">Area</label>
-            <input type="text" autocomplete="off">
+            <div class="control">
+                {{ form.usuario(class="control", placeholder="Área") }}
         </div>
         <div>
-            <label for="floatingInput">Cargo</label>
-            <input type="text" autocomplete="off">
+            <div class="control">
+                {{ form.usuario(class="control", placeholder="Cargo") }}
         </div>
         <div>
-            <label for="floatingInput">Correo</label>
-            <input type="password">
+            <div class="control">
+                {{ form.usuario(class="control", placeholder="Correo") }}
         </div>
         <div>
             <button type="submit">Administrador</button>

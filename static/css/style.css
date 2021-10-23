@@ -12,6 +12,10 @@ body{
     font-family: 'Londrina Solid', cursive;
 }
 
+a{
+    text-decoration: none;
+}
+
 .form-login{
     color: white;
     height: 70vh;
@@ -94,16 +98,10 @@ body{
 
 .form .button{
     display: block;
-    margin: 5px 5px 5px 5px;
-    border: none;
+    margin: 5px 0px 5px -5px;
     outline: none;
-    background: #137DC5;
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     padding: 5px 10px;
-    border-radius: 5px;
-    color: white;
 }
-
-

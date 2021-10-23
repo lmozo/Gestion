@@ -1,4 +1,5 @@
 import db 
+from werkzeug.security import generate_password_hash
 
 class usuario():
     id=0
@@ -27,7 +28,8 @@ class usuario():
 
     def insertar(self):
         sql = "INSERT INTO usuarios (login, id_rol, estado) VALUES (?,?,?);"
-        afectadas = db.ejecutar_insert(sql, [ self.login, self.id_rol, 'A' ])
+        hashed_pwd = generate_password_hash(self.password, method="pbkdf2:sha256", salt_length=32)
+        afectadas = db.ejecutar_insert(sql, [ self.login, self.id_rol, 'A', hashed_pwd ])
         return (afectadas > 0)
 
 
