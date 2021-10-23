@@ -30,11 +30,11 @@
                {{ form.password(class="control", placeholder="Contraseña", href="{{ url_for('registro') }}") }}
            </div>
            <div class="button">
-               {{ form.ingresar(class="boton, button") }}
+               {{ form.ingresar(class="boton") }}
            </div>
            <p><a href="{{ url_for('registro') }}" style="color: rgba(255, 255, 255, 0.8);">Registrate aqui</a></p>
            <br>
-           <p><a href="#" style="color: rgba(255, 255, 255, 0.8);">Olvidaste tu contraseña?</a></p>
+           <p><a href="{{url_for('registro')}}" style="color: rgba(255, 255, 255, 0.8);">Olvidaste tu contraseña?</a></p>
         </form>
     </section>
     {% endblock %}

@@ -4,7 +4,7 @@ from flask.templating import render_template
 from forms import FormEmpleado, FormLogin, FormUsuario
 from listas import lista_usuarios, lista_empleados
 from forms import FormRegistro
-# FormCrearEmadople,
+#FormCrearEmadople,
 
 app = Flask(__name__)
 
@@ -13,6 +13,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 
 @app.route('/', methods=["GET", "POST"])
+@app.route('/login/', methods=["GET", "POST"])
 def login():
     mensaje = ""
 
@@ -82,7 +83,7 @@ def crear_u():
         return render_template('crear_usuario.html',form=formulario, mensaje = mensaje)
 
 
-"""@app.route("/editar_usuario/")
+@app.route("/editar_usuario/")
 def editar_u():
     mensaje = ""
     if request.method == "GET": 
@@ -100,7 +101,6 @@ def editar_u():
         
         return render_template('editar_usuario.html',form=formulario, mensaje = mensaje)
 
-"""
 
 @app.route("/consultar_usuario/")
 def consultar_u():
@@ -127,7 +127,7 @@ def empleado_evaluar():
     return render_template('empleado_evaluar.html')
 
 
-"""@app.route('/admin_empleados/crear_empleado/', methods=('GET', 'POST'))
+@app.route('/admin_empleados/crear_empleado/', methods=('GET', 'POST'))
 def crear_empleado():
     mensaje = ""
     if request.method == "GET": 
@@ -144,7 +144,7 @@ def crear_empleado():
             mensaje += "Todos los datos son requeridos."
         
         return render_template('crear_empleado.html',form=formulario, mensaje = mensaje)
-"""
+
 
 def validar_login(usuario,password):
     for i in range(len(lista_usuarios)):
@@ -167,3 +167,15 @@ def registrar_usuario(usuario,contrasena):
     lista_usuarios.append({"id": id,"usuario": usuario,"password": contrasena})
     return True    
     
+def validar_empleado(usuario):
+    for i in range(len(lista_usuarios)):
+        if lista_usuarios[i]["usuario"] == usuario:
+            if lista_usuarios[i]["password"] == None:
+                return True
+
+    return False
+
+def registrar_empleado(usuario,contrasena):
+    id = len(lista_usuarios) + 1
+    lista_usuarios.append({"id": id,"usuario": usuario,"password": contrasena})
+    return True
