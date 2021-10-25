@@ -4,6 +4,7 @@ from flask.templating import render_template
 from forms import FormEmpleado, FormLogin, FormUsuario
 from listas import lista_usuarios, lista_empleados
 from forms import FormRegistro
+from models import empleado, usuario
 # FormCrearEmadople,
 
 app = Flask(__name__)
@@ -72,35 +73,40 @@ def crear_u():
     else:
         formulario = FormUsuario(request.form)
         if formulario.validate_on_submit():
-            if registrar_usuario(formulario.data):
-                 mensaje += "Usuario registrado exitosamente."
+            #falta-con la identificación debo consultar primero el id del empleado para verificar que exista y no tenga ya usuario asociado y luego instanciar un objeto usuario
+            obj_usuario = usuario(p_id=0, p_id_empleado = formulario.identificacion.data, p_login=formulario.usuario.data,
+            p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
+
+            #falta-Debo validar antes de la inserción que no haya ya un usuario creado con ese mismo login
+            if obj_usuario.insertar():
+                return render_template("crear_usuario.html", form=FormUsuario(), mensaje= "El usuario ha sido creado.")
             else:
-                mensaje += "Ocurrió un error durante el registro del usuario, por favor intente nuevamente."
-        else:
-            mensaje += "Todos los datos son requeridos."
-        
-        return render_template('crear_usuario.html',form=formulario, mensaje = mensaje)
+                return render_template("crear_usuario.html", form=formulario, mensaje= "No fue posible crear el usuario, consulte a soporte técnico.")
+
+        return render_template("crear_usuario.html", form=formulario, mensaje = "Todos los datos son requeridos.")
 
 
-"""@app.route("/editar_usuario/")
+@app.route("/editar_usuario/")
 def editar_u():
     mensaje = ""
     if request.method == "GET": 
-        formulario = FormEditarUsuario()
+        formulario = FormUsuario()
         return render_template('editar_usuario.html', form = formulario)
     else:
-        formulario = FormEditarUsuario(request.form)
+        formulario = FormUsuario(request.form)
         if formulario.validate_on_submit():
-            if editar_usuario(formulario.data):
-                 mensaje += "Usuario editado exitosamente."
-            else:
-                mensaje += "Ocurrió un error durante la edición del usuario, por favor intente nuevamente."
-        else:
-            mensaje += "Todos los datos son requeridos."
-        
-        return render_template('editar_usuario.html',form=formulario, mensaje = mensaje)
+            obj_usuario = usuario(p_id=0, p_id_empleado = formulario.identificacion.data, p_login=formulario.usuario.data,
+            p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
 
-"""
+            #falta-Debo validar antes de la inserción que no haya ya un usuario creado con ese mismo login
+            if obj_usuario.editar():
+                return render_template("crear_usuario.html", form=FormUsuario(), mensaje= "El usuario ha sido editado.")
+            else:
+                return render_template("crear_usuario.html", form=formulario, mensaje= "No fue posible editar el usuario, consulte a soporte técnico.")
+
+        return render_template("crear_usuario.html", form=formulario, mensaje = "Todos los datos son requeridos.")
+
+
 
 @app.route("/consultar_usuario/")
 def consultar_u():
@@ -108,7 +114,30 @@ def consultar_u():
 
 @app.route("/crear_empleado/")
 def crear_e():
-    return render_template('crear_empleado.html')
+    mensaje = ""
+    if request.method == "GET": 
+        formulario = FormEmpleado()
+        return render_template('crear_empleado.html', form = formulario)
+    else:
+        formulario = FormEmpleado(request.form)
+        if formulario.validate_on_submit():
+            #falta- incluir validaciones para asegurar que no exista esa identificación ya registrada
+            obj_empleado = empleado(p_id=0, p_tipo_identificacion = formulario.tipoIdentificacion.data, 
+            p_numero_identificacion = formulario.identificacion.data, p_nombre = formulario.nombre.data,
+            p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
+            p_fecha_fin_contrato = formulario.fechaFin.data, p_id_dependencia = formulario.idDependencia.data,
+            p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
+            p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
+
+            #falta-Debo validar antes de la inserción que no haya ya un usuario creado con ese mismo login
+            if obj_empleado.insertar():
+                return render_template("crear_empleado.html", form=FormUsuario(), mensaje= "El empleado ha sido creado.")
+            else:
+                return render_template("crear_empleado.html", form=formulario, mensaje= "No fue posible crear el empleado, consulte a soporte técnico.")
+
+        return render_template("crear_empleado.html", form=formulario, mensaje = "Todos los datos son requeridos.")
+
+
 
 @app.route("/editar_empleado/")
 def editar_e():

@@ -21,7 +21,7 @@ class FormEmpleado(FlaskForm):
     identificacion = StringField('Número de Identificación',validators=[validators.required(message="Esciba la identificación"),validators.length(max=20)])
     nombre = StringField('Nombre del Empleado',validators=[validators.required(message="Esciba la identificación"),validators.length(max=50, min=5)])
     correo = StringField('Correo Electrónico', validators=[validators.required(message="El correo electrónico es obligatorio"),validators.length(max=150)])
-    idArea = StringField('Área', validators=[validators.required(message="El área es obligatorio")])
+    idDependencia = StringField('Dependencia', validators=[validators.required(message="El área es obligatorio")])
     idCargo = StringField('Cargo', validators=[validators.required(message="El cargo es obligatorio")])
     idTipoContrato = IntegerField('Tipo de Contrato', validators=[validators.required(message="El tipo de contraro es obligatorio")])
     fechaIngreso = DateField('Fecha de Ingreso', validators=[validators.required(message="La fecha de ingreso es requerida")])
@@ -32,10 +32,14 @@ class FormEmpleado(FlaskForm):
     registrar = SubmitField("Registrar")
 
 class FormUsuario(FlaskForm):
-    usuario = StringField('Usuario',validators=[validators.required(message="Escriba el usuario"),validators.length(max=20)])
-    identificacion = PasswordField('Identificacion',validators=[validators.required(message="Escriba su numero de Identificacion")])
-    area = StringField('Area',validators=[validators.required(message="Por favor ingrese el area, a la cual pertenece")])
-    cargo = StringField('Cargo',validators=[validators.required(message="Por favor ingrese el cargo en el cual se desempeña")])
-    
+    identificacion = PasswordField('Identificacion',validators=[validators.required(message="Escriba la identificación del empleado al que le creará el usuario")])
+    usuario = StringField('Usuario',validators=[validators.required(message="Escriba el nombre de usuario"),validators.length(max=20)])
+    rol = StringField('Rol',validators=[validators.required(message="Escoja un rol para el usuario")])
+    registrar = SubmitField("Registrar")
+
+
+
+
+
 
 
