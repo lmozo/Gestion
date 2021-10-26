@@ -6,11 +6,9 @@ from flask.templating import render_template
 from werkzeug.utils import redirect
 from wtforms.form import Form
 from forms import FormEmpleado, FormLogin, FormUsuario
-from listas import lista_usuarios, lista_empleados
 from forms import FormRegistro
 from models import empleado, usuario
 from utils import isEmailValid, isPasswordValid
-
 
 app = Flask(__name__)
 
@@ -23,7 +21,7 @@ def login_required(view):
     def wrapped_view(**kwargs):
         
         if g.user is None:
-            return redirect( url_for('/'))
+            return redirect( url_for('login'))
         
         return view(**kwargs)
     

@@ -55,7 +55,7 @@ class usuario():
         obj_usuario = db.ejecutar_select(sql, [ self.usuario, 'A' ])
 
         if obj_usuario:
-            if len(obj_usuario) >0:
+            if len(obj_usuario) > 0:
                 #Verificamos que el password corresponda al almacenado con el hash seguro.
                 if check_password_hash(obj_usuario[0]["password"], self.password):
                     return True
