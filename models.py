@@ -56,7 +56,7 @@ class usuario():
 
         if obj_usuario:
             if len(obj_usuario) > 0:
-                #Verificamos que el password corresponda al almacenado con el hash seguro.
+                #Verificamos que el password corresponda al almacenado en la bd con el hash seguro.
                 if check_password_hash(obj_usuario[0]["password"], self.password):
                     return True
         
