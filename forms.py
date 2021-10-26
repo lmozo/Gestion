@@ -1,7 +1,7 @@
 from datetime import date
 from flask_wtf import FlaskForm
 from werkzeug.utils import ArgumentValidationError
-from wtforms.fields.core import BooleanField, DateField, FloatField, IntegerField, StringField
+from wtforms.fields.core import BooleanField, DateField, FloatField, IntegerField, RadioField, SelectField, StringField
 from wtforms.fields.simple import PasswordField, SubmitField
 from wtforms import validators
 
@@ -17,13 +17,13 @@ class FormRegistro(FlaskForm):
     enviar = SubmitField("Registrar")
 
 class FormEmpleado(FlaskForm):
-    tipoIdentificacion = StringField('Tipo de Identificacion',validators=[validators.required()])
+    tipoIdentificacion = SelectField('Tipo de Identificacion',choices=[('CC', 'Cédula de ciudadanía'),('TI', 'Tarjeta de identidad')],default='CC')
     identificacion = StringField('Número de Identificación',validators=[validators.required(message="Esciba la identificación"),validators.length(max=20)])
     nombre = StringField('Nombre del Empleado',validators=[validators.required(message="Esciba la identificación"),validators.length(max=50, min=5)])
     correo = StringField('Correo Electrónico', validators=[validators.required(message="El correo electrónico es obligatorio"),validators.length(max=150)])
-    idArea = StringField('Área', validators=[validators.required(message="El área es obligatorio")])
-    idCargo = StringField('Cargo', validators=[validators.required(message="El cargo es obligatorio")])
-    idTipoContrato = IntegerField('Tipo de Contrato', validators=[validators.required(message="El tipo de contraro es obligatorio")])
+    idDependencia = SelectField('Dependencia', validators=[validators.InputRequired(message="La dependencia es obligatoria")])
+    idCargo = SelectField('Cargo', validators=[validators.InputRequired(message="El cargo es obligatorio")])
+    idTipoContrato = SelectField('Tipo de Contrato', validators=[validators.InputRequired(message="El tipo de contraro es obligatorio")])
     fechaIngreso = DateField('Fecha de Ingreso', validators=[validators.required(message="La fecha de ingreso es requerida")])
     fechaFin = DateField('Fecha Final del Contrato')
     salario = FloatField('Salario', validators=[validators.required(message="El salario es requerido")])
@@ -32,10 +32,14 @@ class FormEmpleado(FlaskForm):
     registrar = SubmitField("Registrar")
 
 class FormUsuario(FlaskForm):
-    usuario = StringField('Usuario',validators=[validators.required(message="Escriba el usuario"),validators.length(max=20)])
-    identificacion = PasswordField('Identificacion',validators=[validators.required(message="Escriba su numero de Identificacion")])
-    area = StringField('Area',validators=[validators.required(message="Por favor ingrese el area, a la cual pertenece")])
-    cargo = StringField('Cargo',validators=[validators.required(message="Por favor ingrese el cargo en el cual se desempeña")])
-    
+    identificacion = PasswordField('Identificacion',validators=[validators.required(message="Escriba la identificación del empleado al que le creará el usuario")])
+    usuario = StringField('Usuario',validators=[validators.required(message="Escriba el nombre de usuario"),validators.length(max=20)])
+    rol = StringField('Rol',validators=[validators.required(message="Escoja un rol para el usuario")])
+    registrar = SubmitField("Registrar")
+
+
+
+
+
 
 
