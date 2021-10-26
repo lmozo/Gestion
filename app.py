@@ -75,10 +75,12 @@ def registro():
     else:
         formulario = FormRegistro(request.form)
         if formulario.validate_on_submit():
+            obj_usuario = usuario(0, 0, formulario.usuario.data, formulario.password.data, 0, '', '', '')
+
             if not isPasswordValid(FormRegistro.password.data):
                 mensaje += "El password no cumple con los requisitos mínimos. "
 
-            if not validar_usuario(formulario.usuario.data):
+            if not usuario.verificar(usuario.usuario):
                 mensaje += "El usuario no es válido o ya fue registrado"  
                   
             if (formulario.password.data != formulario.repassword.data):
@@ -86,16 +88,13 @@ def registro():
         else:
             mensaje += "Todos los datos son requeridos."
         
-        if not mensaje:
-            
-            if (registrar_usuario(formulario.usuario.data, formulario.password.data)):
+        if not mensaje:   
+            if usuario.registrar_usuario():
                 mensaje = "Su cuenta ha sido registrada, puede iniciar sesión."
             else:
                 mensaje += "Ocurrió un error durante el registro, por favor intente nuevamente."
 
-            return render_template('registro.html', form=formulario, mensaje = mensaje)
-        else:
-            return render_template('registro.html',form=formulario, mensaje = mensaje)
+        return render_template('registro.html',form=formulario, mensaje = mensaje)
 
 
 @app.route("/menu/")
@@ -188,7 +187,7 @@ def crear_e():
             p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
             p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
 
-            #falta- validar antes de la inserción que no haya ya un registro creado con ese mismo usuario
+            #falta- validar antes de la inserción que no haya ya un registro creado con esa misma identificación
             if obj_empleado.insertar():
                 return render_template("crear_empleado.html", form=FormUsuario(), mensaje= "El empleado ha sido creado.")
             else:
