@@ -219,7 +219,6 @@ def crear_e():
         formulario.idTipoContrato.choices = lt
         formulario.idJefe.choices = lj
         
-
         return render_template('crear_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
     else:
         formulario = FormEmpleado(request.form)
