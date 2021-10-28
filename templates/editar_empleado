@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+{% block contenido %}
+
+<div class="form-login formulario">
+    <form class="form" method="post" onsubmit="">
+        {{ form.hidden_tag() }}
+        
+        <h3>Crear empleado</h3>
+        <br>
+        <div>
+            <div class="control">
+               {{ form.tipoIdentificacion(class="control", placeholder="Tipo Identificación", ) }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.identificacion(class="control", placeholder="Identificación", disable=True) }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.nombre(class="control", placeholder="Nombre") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.correo(class="control", placeholder="Correo") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.idDependencia(class="control", placeholder="Dependencia") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.idCargo(class="control", placeholder="Cargo") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.idTipoContrato(class="control", placeholder="Tipo de Contrato") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.fechaIngreso(class="control", placeholder="Fecha de Ingreso", disable=True) }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.fechaFin(class="control", placeholder="Fecha Fin contrato") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.salario(class="control", placeholder="Salario") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.idJefe(class="control", placeholder="Cargo") }}
+        </div>
+        <div>
+            <div class="control">
+                {{ form.esJefe(class="control", placeholder="¿Es Jefe?") }}
+        </div>
+        <div>
+            <button type="submit">registrar</button>
+        </div>
+    </form>
+    
+</div>
+{% endblock %}
+
+ 
