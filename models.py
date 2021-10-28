@@ -92,6 +92,7 @@ class empleado():
     numero_identificacion = ''
     nombre = ''
     correo = ''
+    id_tipo_contrato = 0
     fecha_ingreso = ''
     fecha_fin_contrato = ''
     id_dependencia = 0
@@ -104,7 +105,7 @@ class empleado():
     creado_en = ''
 
     def __init__(self, p_id, p_tipo_identificacion, p_numero_identificacion, p_nombre,
-        p_id_tipo_contrato, p_fecha_ingreso, p_fecha_fin_contrato, p_id_dependencia,
+        p_id_correo, p_id_tipo_contrato, p_fecha_ingreso, p_fecha_fin_contrato, p_id_dependencia,
         p_id_cargo, p_salario, p_id_jefe, p_es_jefe = False, p_estado='A', 
         p_creado_por = 'admin', p_creado_en = '2021-10-25'):
         
@@ -112,6 +113,7 @@ class empleado():
         self.tipo_identificacion = p_tipo_identificacion
         self.numero_identificacion = p_numero_identificacion
         self.nombre = p_nombre
+        self.correo = p_id_correo
         self.id_tipo_contrato = p_id_tipo_contrato
         self.fecha_ingreso = p_fecha_ingreso
         self.fecha_fin_contrato = p_fecha_fin_contrato
@@ -132,7 +134,7 @@ class empleado():
         if obj:
             if len(obj)>0:
                 return cls(obj[0]["id"], obj[0]["tipo_identificacion"],obj[0]["numero_identificacion"],
-                obj[0]["nombre"],obj[0]["correo"],obj[0]["fecha_ingreso"],obj[0]["fecha_fin_contrato"],
+                obj[0]["nombre"],obj[0]["correo"],obj[0]["id_tipo_contrato"],obj[0]["fecha_ingreso"],obj[0]["fecha_fin_contrato"],
                 obj[0]["id_dependencia"],obj[0]["id_cargo"],obj[0]["salario"],obj[0]["id_jefe"],
                 obj[0]["es_jefe"],obj[0]["estado"],obj[0]["creado_por"], obj[0]["creado_en"])
 
@@ -140,9 +142,9 @@ class empleado():
 
 
     def insertar(self):
-        sql = "INSERT INTO empleados (tipo_identificacion,numero_identificacion,nombre,correo,fecha_ingreso,fecha_fin_contrato,id_dependencia,id_cargo,salario,id_jefe,es_jefe,estado,creado_por,creado_en) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
+        sql = "INSERT INTO empleados (tipo_identificacion,numero_identificacion,nombre,correo,id_tipo_contrato,fecha_ingreso,fecha_fin_contrato,id_dependencia,id_cargo,salario,id_jefe,es_jefe,estado,creado_por,creado_en) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
             
-        afectadas = db.ejecutar_insert(sql, [ self.tipo_identificacion, self.numero_identificacion, self.nombre, self.correo, self.fecha_ingreso, self.fecha_fin_contrato, self.id_dependencia, self.id_cargo, self.salario, self.id_jefe, self.es_jefe, 'A', self.creado_por, self.creado_en ])
+        afectadas = db.ejecutar_insert(sql, [ self.tipo_identificacion, self.numero_identificacion, self.nombre, self.correo, self.id_tipo_contrato, self.fecha_ingreso, self.fecha_fin_contrato, self.id_dependencia, self.id_cargo, self.salario, self.id_jefe, self.es_jefe, 'A', self.creado_por, self.creado_en ])
         return (afectadas > 0)
 
 
@@ -153,10 +155,22 @@ class empleado():
 
 
     def editar(self):
-        sql = "UPDATE empleados SET (correo, fecha_fin_contrato, id_dependencia, id_cargo, salario, id_jefe, es_jefe) = (?,?,?,?,?,?,?) WHERE id = ?;"
-        afectadas = db.ejecutar_insert(sql, [ self.correo, self.fecha_fin_contrato, self.id_dependencia, 
+        sql = "UPDATE empleados SET (tipo_identificacion, nombre, correo, fecha_fin_contrato, id_dependencia, id_cargo, salario, id_jefe, es_jefe) = (?,?,?,?,?,?,?,?,?) WHERE id = ?;"
+        afectadas = db.ejecutar_insert(sql, [ self.tipo_identificacion, self.nombre, self.correo, self.fecha_fin_contrato, self.id_dependencia, 
                     self.id_cargo, self.salario, self.id_jefe, self.es_jefe, self.id ])
         return (afectadas > 0)
+
+
+    def verificar(self):
+        sql = "SELECT * FROM empleados WHERE numero_identificacion = ? AND estado = ?; "
+        obj_empleado = db.ejecutar_select(sql, [ self.numero_identificacion, 'A' ])
+
+        if obj_empleado:
+            if len(obj_empleado) > 0:
+                return None
+        
+        return obj_empleado
+
 
     @staticmethod
     def listado():

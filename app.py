@@ -58,8 +58,7 @@ def login():
                     session.clear()
                     session['user_id'] = dic_usuario[0]["usuario"]
                     return redirect(url_for('menu'))
-                    #return render_template('registro.html',form=FormRegistro())
-        
+                    
         return render_template('index.html',form=formulario, mensaje='Usuario o contraseña NO válidos.')
 
 
@@ -110,7 +109,7 @@ def menu():
     return redirect('/admin_empleados/crear_empleado')
 
 
-@app.route("/admin_usuarios/crear_usuario/")
+@app.route("/admin_usuarios/crear_usuario/", methods=["GET", "POST"])
 @login_required
 def crear_u():
     mensaje = ""
@@ -120,11 +119,11 @@ def crear_u():
     else:
         formulario = FormUsuario(request.form)
         if formulario.validate_on_submit():
-            #falta-con la identificación debo consultar primero el id del empleado para verificar que exista y no tenga ya usuario asociado y luego instanciar un objeto usuario
+            #-con la identificación debo consultar el id del empleado para verificar que exista y no tenga ya usuario asociado y luego instanciar un objeto usuario
             obj_usuario = usuario(p_id=0, p_id_empleado = formulario.identificacion.data, p_usuario=formulario.usuario.data,
             p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
 
-            #falta- validar antes de la inserción que no haya ya un registro creado con ese mismo usuario
+            #- validar antes de la inserción que no haya ya un registro creado con ese mismo usuario
             if obj_usuario.insertar():
                 return render_template("crear_usuario.html", form=FormUsuario(), mensaje= "El usuario ha sido creado.")
             else:
@@ -133,7 +132,7 @@ def crear_u():
         return render_template("crear_usuario.html", form=formulario, mensaje = "Todos los datos son requeridos.")
 
 
-@app.route("/admin_usuarios/editar_usuario/")
+@app.route("/admin_usuarios/editar_usuario/", methods=["GET", "POST"])
 @login_required
 def editar_u():
     mensaje = ""
@@ -146,7 +145,7 @@ def editar_u():
             obj_usuario = usuario(p_id=0, p_id_empleado = formulario.identificacion.data, p_login=formulario.usuario.data,
             p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
 
-            #falta-Debo validar antes de la inserción que no haya ya un registro creado con ese mismo usuario
+            #-Debo validar antes de la inserción que no haya ya un registro creado con ese mismo usuario
             if obj_usuario.editar():
                 return render_template("crear_usuario.html", form=FormUsuario(), mensaje= "El usuario ha sido editado.")
             else:
@@ -172,7 +171,7 @@ def get_usuario_json(id):
 @app.route("/admin_empleados/consultar_empleado/",methods=["GET"])
 @login_required
 def get_listado_empleados_json():
-    return jsonify(usuario.listado())
+    return jsonify(empleado.listado())
 
 @app.route("/admin_empleados/consultar_empleado/ver/<id>")
 @login_required
@@ -183,9 +182,11 @@ def get_empleado_json(id):
     return jsonify({"error":"No existe un empleado con el id especificado." })
 
 
-@app.route("/admin_empleados/crear_empleado/")
+@app.route("/admin_empleados/crear_empleado/", methods=["GET", "POST"])
 @login_required
-def crear_e():
+def crear_empleado():
+    mensaje = ""
+
     if request.method == "GET": 
         formulario = FormEmpleado()
 
@@ -229,10 +230,14 @@ def crear_e():
             today = datetime.today()
             obj_empleado = empleado(p_id=0, p_tipo_identificacion = formulario.tipoIdentificacion.data, 
             p_numero_identificacion = formulario.identificacion.data, p_nombre = formulario.nombre.data,
-            p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
+            p_id_correo = formulario.idcorreo, p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
             p_fecha_fin_contrato = formulario.fechaFin.data, p_id_dependencia = formulario.idDependencia.data,
             p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
             p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = today)
+
+            dic_empleado = empleado.verificar(obj_empleado)
+            if dic_empleado != None:
+                return render_template("crear_empleado.html", form=formulario, mensaje = "La identificación ya está asociada a otro empleado.")
 
             if obj_empleado.insertar(obj_empleado):
                 return render_template("crear_empleado.html", form=FormEmpleado(), mensaje= "El empleado ha sido creado.")
@@ -242,7 +247,7 @@ def crear_e():
         return render_template("crear_empleado.html", form=formulario, mensaje = "Todos los datos son requeridos.")
 
 
-@app.route("/admin_empleados/editar_empleado/")
+@app.route("/admin_empleados/editar_empleado/", methods=["GET", "POST"])
 @login_required
 def editar_e():
     if request.method == "GET": 
