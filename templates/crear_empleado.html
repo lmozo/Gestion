@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'admin.html' %}
 {% block contenido %}
 
 <div class="form-login formulario">
@@ -49,14 +49,14 @@
         </div>
         <div>
             <div class="control">
-                {{ form.idJefe(class="control", placeholder="Cargo") }}
+                {{ form.idJefe(class="control", placeholder="Jefe") }}
         </div>
         <div>
             <div class="control">
                 {{ form.esJefe(class="control", placeholder="¿Es Jefe?") }}
         </div>
-        <div>
-            <button type="submit">registrar</button>
+        <div class="button">
+            {{ form.registrar(class="button") }}
         </div>
     </form>
     

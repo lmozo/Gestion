@@ -27,7 +27,7 @@ class FormEmpleado(FlaskForm):
     fechaIngreso = DateField('Fecha de Ingreso', validators=[validators.required(message="La fecha de ingreso es requerida")])
     fechaFin = DateField('Fecha Final del Contrato')
     salario = FloatField('Salario', validators=[validators.required(message="El salario es requerido")])
-    idJefe = IntegerField('Jefe')
+    idJefe = SelectField('Jefe')
     esJefe = BooleanField('¿Es Jefe?', validators=[validators.required(message="Indique si el empleado se desempeñará o no como jefe")])
     registrar = SubmitField("Registrar")
 

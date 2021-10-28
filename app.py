@@ -1,3 +1,4 @@
+import datetime
 import os
 import functools
 
@@ -168,6 +169,19 @@ def get_usuario_json(id):
     return jsonify({"error":"No existe un usuario con el id especificado." })
 
 
+@app.route("/admin_empleados/consultar_empleado/",methods=["GET"])
+@login_required
+def get_listado_empleados_json():
+    return jsonify(usuario.listado())
+
+@app.route("/admin_empleados/consultar_empleado/ver/<id>")
+@login_required
+def get_empleado_json(id):
+    obj_empleado = empleado.cargar(id)
+    if obj_empleado:
+        return obj_empleado
+    return jsonify({"error":"No existe un empleado con el id especificado." })
+
 
 @app.route("/admin_empleados/crear_empleado/")
 @login_required
@@ -175,14 +189,17 @@ def crear_e():
     if request.method == "GET": 
         formulario = FormEmpleado()
 
-        cargos=()
+        dependencias=()
         dependencias = ejecutar_select("SELECT id, descripcion FROM dependencias")
+        cargos=()
         cargos = ejecutar_select("SELECT id, descripcion FROM cargos")
+        contratos=()
         contratos = ejecutar_select("SELECT id, descripcion FROM tipos_contrato")
+        jefes=()
+        jefes = ejecutar_select("SELECT id, nombre FROM empleados WHERE es_jefe = True AND estado = 'A' ")
 
         ld=[]
-
-        for i in cargos:
+        for i in dependencias:
             ld.append((i["id"],i["descripcion"]))
 
         lc=[]
@@ -190,12 +207,18 @@ def crear_e():
             lc.append((i["id"],i["descripcion"]))
 
         lt=[]
-        for i in cargos:
+        for i in contratos:
             lt.append((i["id"],i["descripcion"]))
+
+        lj=[]
+        for i in jefes:
+            lj.append((i["id"],i["nombre"]))
 
         formulario.idDependencia.choices = ld
         formulario.idCargo.choices = lc
-        formulario.idCargo.choices = lt
+        formulario.idTipoContrato.choices = lt
+        formulario.idJefe.choices = lj
+        
 
         return render_template('crear_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
     else:
@@ -204,12 +227,13 @@ def crear_e():
             #if not isEmailValid(FormEmpleado.correo.data):
                 #mensaje += "El email es inválido. "
 
+            today = datetime.today()
             obj_empleado = empleado(p_id=0, p_tipo_identificacion = formulario.tipoIdentificacion.data, 
             p_numero_identificacion = formulario.identificacion.data, p_nombre = formulario.nombre.data,
             p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
             p_fecha_fin_contrato = formulario.fechaFin.data, p_id_dependencia = formulario.idDependencia.data,
             p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
-            p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
+            p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = today)
 
             if obj_empleado.insertar(obj_empleado):
                 return render_template("crear_empleado.html", form=FormEmpleado(), mensaje= "El empleado ha sido creado.")
@@ -225,13 +249,18 @@ def editar_e():
     if request.method == "GET": 
         formulario = FormEmpleado()
 
-        cargos=()
+        dependencias=()
         dependencias = ejecutar_select("SELECT id, descripcion FROM dependencias")
+        print(dependencias)
+        cargos=()
         cargos = ejecutar_select("SELECT id, descripcion FROM cargos")
+        print(cargos)
+        contratos=()
         contratos = ejecutar_select("SELECT id, descripcion FROM tipos_contrato")
+        print(contratos)
 
         ld=[]
-        for i in cargos:
+        for i in dependencias:
             ld.append((i["id"],i["descripcion"]))
 
         lc=[]
@@ -239,12 +268,15 @@ def editar_e():
             lc.append((i["id"],i["descripcion"]))
 
         lt=[]
-        for i in cargos:
+        for i in contratos:
             lt.append((i["id"],i["descripcion"]))
 
         formulario.idDependencia.choices = ld
+        print(ld)
         formulario.idCargo.choices = lc
-        formulario.idCargo.choices = lt
+        print(lc)
+        formulario.idTipoContrato.choices = lt
+        print(lt)
 
         return render_template('crear_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
     else:
