@@ -7,14 +7,14 @@ from wtforms import validators
 
 class FormLogin(FlaskForm):
     usuario = StringField('Usuario',validators=[validators.required(message="Esciba el usuario"),validators.length(max=20)])
-    password = PasswordField('Contraseña',validators=[validators.required(message="Esciba la contraseña"),validators.length(max=50)])
+    password = PasswordField('Password',validators=[validators.required(message="Esciba la contraseña"),validators.length(max=50)])
     ingresar = SubmitField("Ingresar")
 
 class FormRegistro(FlaskForm):
     usuario = StringField('Usuario',validators=[validators.required(message="Esciba el usuario"),validators.length(max=20)])
-    password = PasswordField('Password',validators=[validators.required(message="Escriba la contraseña"),validators.length(max=50, min=10)])
-    repassword = PasswordField("Confirmar Password", validators=[validators.required(message="Re escriba la contraseña"),validators.length(max=50, min=10),])
-    enviar = SubmitField("Registrar")
+    password = PasswordField('Password',validators=[validators.required(message="Escriba la contraseña"),validators.length(max=50, min=8)])
+    repassword = PasswordField("Confirmar Password", validators=[validators.required(message="Re escriba la contraseña"),validators.length(max=50, min=8)])
+    registrar = SubmitField("Registrar")
 
 class FormEmpleado(FlaskForm):
     tipoIdentificacion = SelectField('Tipo de Identificacion',choices=[('CC', 'Cédula de ciudadanía'),('TI', 'Tarjeta de identidad')],default='CC')

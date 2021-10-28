@@ -22,9 +22,9 @@ class usuario():
         self.creado_en = p_creado_en
     
     @classmethod
-    def cargar(cls, p_id):
-        sql = "SELECT * FROM usuarios WHERE id = ?;"
-        obj = db.ejecutar_select(sql, [ p_id ])
+    def cargar(cls, p_usuario):
+        sql = "SELECT * FROM usuarios WHERE usuario = ?;"
+        obj = db.ejecutar_select(sql, [ p_usuario ])
         if obj:
             if len(obj)>0:
                 return cls(obj[0]["id"], obj[0]["id_empleado"], obj[0]["usuario"], obj[0]["password"], obj[0]["id_rol"], obj[0]["estado"], obj[0]["creado_por"], obj[0]["creado_en"])
@@ -58,14 +58,24 @@ class usuario():
             if len(obj_usuario) > 0:
                 #Verificamos que el password corresponda al almacenado en la bd con el hash seguro.
                 if check_password_hash(obj_usuario[0]["password"], self.password):
-                    return True
+                    return obj_usuario
         
-        return False
+        return None
+
+    def verificar_reg(self):
+        sql = "SELECT * FROM usuarios WHERE usuario = ? AND estado = ?; "
+        obj_usuario = db.ejecutar_select(sql, [ self.usuario, 'A' ])
+
+        if obj_usuario and len(obj_usuario) > 0 and obj_usuario[0]["password"] == None:
+            return obj_usuario
+
+        return None
+                
 
     def registrar_usuario(self):
         sql = "UPDATE usuarios SET password = ? WHERE id = ?;"
-        hashed_pwd = generate_password_hash(self.password, method="pbkdf2:sha256", salt_length=32)
-        afectadas = db.ejecutar_insert(sql, [hashed_pwd, self.id ])
+        hashed_pwd = generate_password_hash(self["password"], method="pbkdf2:sha256", salt_length=32)
+        afectadas = db.ejecutar_insert(sql, [hashed_pwd, self["id"] ])
         return (afectadas > 0)
 
 

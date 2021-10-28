@@ -1,14 +1,16 @@
 import os
 import functools
 
-from flask import Flask, jsonify, render_template, request, g, url_for, session
-from flask.templating import render_template
 from werkzeug.utils import redirect
 from wtforms.form import Form
-from forms import FormEmpleado, FormLogin, FormUsuario
-from forms import FormRegistro
-from models import empleado, usuario
-from utils import isEmailValid, isPasswordValid
+
+from flask import Flask, jsonify, render_template, request, g, url_for, session
+from flask.templating import render_template
+from db import ejecutar_select
+from forms import FormRegistro, FormLogin, FormUsuario, FormEmpleado
+from models import usuario, empleado
+from utils import isPasswordValid
+
 
 app = Flask(__name__)
 
@@ -50,13 +52,14 @@ def login():
             obj_usuario = usuario(0,0,formulario.usuario.data,formulario.password.data,0,'','','')
 
             if not obj_usuario.usuario.__contains__("'") and not obj_usuario.password.__contains__("'"):
-                if obj_usuario.verificar():
+                dic_usuario = usuario.verificar(obj_usuario)
+                if dic_usuario != None:
                     session.clear()
-                    session['user_id'] = obj_usuario.usuario
+                    session['user_id'] = dic_usuario[0]["usuario"]
                     return redirect(url_for('menu'))
+                    #return render_template('registro.html',form=FormRegistro())
         
-            return render_template('index.html',form=formulario, mensaje='Usuario o contraseña NO válidos.')
-
+        return render_template('index.html',form=formulario, mensaje='Usuario o contraseña NO válidos.')
 
 
 @app.route('/logout/')
@@ -77,20 +80,23 @@ def registro():
         if formulario.validate_on_submit():
             obj_usuario = usuario(0, 0, formulario.usuario.data, formulario.password.data, 0, '', '', '')
 
-            if not isPasswordValid(FormRegistro.password.data):
-                mensaje += "El password no cumple con los requisitos mínimos. "
+            dic_usuario = usuario.verificar_reg(obj_usuario)
+            if dic_usuario == None:
+                mensaje += "El usuario no es válido o ya fue registrado"
 
-            if not usuario.verificar(usuario.usuario):
-                mensaje += "El usuario no es válido o ya fue registrado"  
+            if not isPasswordValid(obj_usuario.password):
+                mensaje += "El password no cumple con los requisitos mínimos. "
                   
             if (formulario.password.data != formulario.repassword.data):
                 mensaje += "Las contraseñas no coinciden."   
         else:
             mensaje += "Todos los datos son requeridos."
         
-        if not mensaje:   
-            if usuario.registrar_usuario():
-                mensaje = "Su cuenta ha sido registrada, puede iniciar sesión."
+        if not mensaje:  
+            dic_usuario[0]["password"] =  obj_usuario.password
+            if usuario.registrar_usuario(dic_usuario[0]):
+                print = "Su cuenta ha sido registrada, puede iniciar sesión."
+                return redirect('/')
             else:
                 mensaje += "Ocurrió un error durante el registro, por favor intente nuevamente."
 
@@ -100,10 +106,7 @@ def registro():
 @app.route("/menu/")
 @login_required
 def menu():
-    if 'logged' in session:
-        return render_template('menu.html')
-    else:
-        redirect ('/')
+    return redirect('/admin_empleados/crear_empleado')
 
 
 @app.route("/admin_usuarios/crear_usuario/")
@@ -129,7 +132,7 @@ def crear_u():
         return render_template("crear_usuario.html", form=formulario, mensaje = "Todos los datos son requeridos.")
 
 
-@app.route("admin_usuarios/editar_usuario/")
+@app.route("/admin_usuarios/editar_usuario/")
 @login_required
 def editar_u():
     mensaje = ""
@@ -169,17 +172,38 @@ def get_usuario_json(id):
 @app.route("/admin_empleados/crear_empleado/")
 @login_required
 def crear_e():
-    mensaje = ""
     if request.method == "GET": 
         formulario = FormEmpleado()
-        return render_template('crear_empleado.html', form = formulario)
+
+        cargos=()
+        dependencias = ejecutar_select("SELECT id, descripcion FROM dependencias")
+        cargos = ejecutar_select("SELECT id, descripcion FROM cargos")
+        contratos = ejecutar_select("SELECT id, descripcion FROM tipos_contrato")
+
+        ld=[]
+
+        for i in cargos:
+            ld.append((i["id"],i["descripcion"]))
+
+        lc=[]
+        for i in cargos:
+            lc.append((i["id"],i["descripcion"]))
+
+        lt=[]
+        for i in cargos:
+            lt.append((i["id"],i["descripcion"]))
+
+        formulario.idDependencia.choices = ld
+        formulario.idCargo.choices = lc
+        formulario.idCargo.choices = lt
+
+        return render_template('crear_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
     else:
         formulario = FormEmpleado(request.form)
         if formulario.validate_on_submit():
-            if not isEmailValid(FormEmpleado.correo.data):
-                mensaje += "El email es inválido. "
+            #if not isEmailValid(FormEmpleado.correo.data):
+                #mensaje += "El email es inválido. "
 
-            #falta- incluir validaciones para asegurar que no exista esa identificación ya registrada
             obj_empleado = empleado(p_id=0, p_tipo_identificacion = formulario.tipoIdentificacion.data, 
             p_numero_identificacion = formulario.identificacion.data, p_nombre = formulario.nombre.data,
             p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
@@ -187,22 +211,64 @@ def crear_e():
             p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
             p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
 
-            #falta- validar antes de la inserción que no haya ya un registro creado con esa misma identificación
-            if obj_empleado.insertar():
-                return render_template("crear_empleado.html", form=FormUsuario(), mensaje= "El empleado ha sido creado.")
+            if obj_empleado.insertar(obj_empleado):
+                return render_template("crear_empleado.html", form=FormEmpleado(), mensaje= "El empleado ha sido creado.")
             else:
                 return render_template("crear_empleado.html", form=formulario, mensaje= "No fue posible crear el empleado, consulte a soporte técnico.")
 
         return render_template("crear_empleado.html", form=formulario, mensaje = "Todos los datos son requeridos.")
 
 
-
 @app.route("/admin_empleados/editar_empleado/")
 @login_required
 def editar_e():
-    return render_template('editar_empleado.html')
+    if request.method == "GET": 
+        formulario = FormEmpleado()
 
-@app.route("admin_empleados/consultar_empleado/")
+        cargos=()
+        dependencias = ejecutar_select("SELECT id, descripcion FROM dependencias")
+        cargos = ejecutar_select("SELECT id, descripcion FROM cargos")
+        contratos = ejecutar_select("SELECT id, descripcion FROM tipos_contrato")
+
+        ld=[]
+        for i in cargos:
+            ld.append((i["id"],i["descripcion"]))
+
+        lc=[]
+        for i in cargos:
+            lc.append((i["id"],i["descripcion"]))
+
+        lt=[]
+        for i in cargos:
+            lt.append((i["id"],i["descripcion"]))
+
+        formulario.idDependencia.choices = ld
+        formulario.idCargo.choices = lc
+        formulario.idCargo.choices = lt
+
+        return render_template('crear_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
+    else:
+        formulario = FormEmpleado(request.form)
+        if formulario.validate_on_submit():
+            #if not isEmailValid(FormEmpleado.correo.data):
+                #mensaje += "El email es inválido. "
+
+            obj_empleado = empleado(p_id=0, p_tipo_identificacion = formulario.tipoIdentificacion.data, 
+            p_numero_identificacion = formulario.identificacion.data, p_nombre = formulario.nombre.data,
+            p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
+            p_fecha_fin_contrato = formulario.fechaFin.data, p_id_dependencia = formulario.idDependencia.data,
+            p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
+            p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
+
+            if obj_empleado.insertar(obj_empleado):
+                return render_template("crear_empleado.html", form=FormEmpleado(), mensaje= "El empleado ha sido creado.")
+            else:
+                return render_template("crear_empleado.html", form=formulario, mensaje= "No fue posible crear el empleado, consulte a soporte técnico.")
+
+        return render_template("crear_empleado.html", form=formulario, mensaje = "Todos los datos son requeridos.")
+
+
+@app.route("/admin_empleados/consultar_empleado/")
 @login_required
 def consultar_e():
     return render_template('consultar_empleado.html')

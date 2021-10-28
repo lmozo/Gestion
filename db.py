@@ -31,7 +31,7 @@ def ejecutar_insert(_sql, lista_parametros):
 
 
 #Funcion para ejecutar las sentencias SQL de tipo: SELECT
-def ejecutar_select(_sql, lista_parametros):
+def ejecutar_select(_sql, lista_parametros=None):
     try:
         conn = conectar()
         if conn:

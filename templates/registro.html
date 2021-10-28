@@ -1,20 +1,21 @@
 {% extends 'index.html' %}
 {% block contenido %}
 <section class="form-login">
-    <form class="form" action="{{ url_for('registro')}}" method="POST" novalidate>
+    <form class="form"  action="{{ url_for('registro')}}" method="POST" > 
+        {{ form.hidden_tag() }}
         <img src="{{ url_for('static',filename='img/avatar.png') }}" alt="">
 
          <h5>Registro</h5>
          <div class="control">
-            <input type="text" name="Usuario" value="" placeholder="Usuario">
-            <label for="usuario"></label>
+            <input type="text" name="usuario" value="" placeholder="Usuario">
+            <label for="Usuario"></label>
         </div>
         <div class="control">
-         <input type="password" name="contraseña" value="" placeholder="Contraseña">
+         <input type="password" name="password" value="" placeholder="Contraseña">
          <label for="contraseña"></label>
         </div>
         <div class="control">
-         <input type="password" name="contraseña" value="" placeholder="Confirma Contraseña">
+         <input type="password" name="repassword" value="" placeholder="Confirma Contraseña">
          <label for="contraseña"></label>
         </div>
         <div class="button">
