@@ -104,16 +104,12 @@ class empleado():
     creado_por = ''
     creado_en = ''
 
-    def __init__(self, p_id, p_tipo_identificacion, p_numero_identificacion, p_nombre,
-        p_id_correo, p_id_tipo_contrato, p_fecha_ingreso, p_fecha_fin_contrato, p_id_dependencia,
-        p_id_cargo, p_salario, p_id_jefe, p_es_jefe = False, p_estado='A', 
-        p_creado_por = 'admin', p_creado_en = '2021-10-25'):
-        
+    def __init__(self, p_id, p_tipo_identificacion,p_numero_identificacion, p_nombre,p_correo, p_id_tipo_contrato, p_fecha_ingreso,p_fecha_fin_contrato, p_id_dependencia,p_id_cargo, p_salario, p_id_jefe, p_es_jefe, p_estado, p_creado_por, p_creado_en):
         self.id = p_id
         self.tipo_identificacion = p_tipo_identificacion
         self.numero_identificacion = p_numero_identificacion
         self.nombre = p_nombre
-        self.correo = p_id_correo
+        self.correo = p_correo
         self.id_tipo_contrato = p_id_tipo_contrato
         self.fecha_ingreso = p_fecha_ingreso
         self.fecha_fin_contrato = p_fecha_fin_contrato
@@ -122,9 +118,15 @@ class empleado():
         self.salario = p_salario
         self.id_jefe = p_id_jefe
         self.es_jefe = p_es_jefe
-        self.p_estado = p_estado
+        self.estado = p_estado
         self.creado_por = p_creado_por
         self.creado_en = p_creado_en
+
+        print("en models")
+        print(p_id, p_tipo_identificacion,p_numero_identificacion,p_nombre)
+        print(p_correo, p_id_tipo_contrato, p_fecha_ingreso)
+        print(p_fecha_fin_contrato, p_id_dependencia, p_id_cargo)
+        print(p_salario, p_id_jefe, p_es_jefe, p_estado, p_creado_por, p_creado_en)
 
     
     @classmethod
@@ -143,7 +145,10 @@ class empleado():
 
     def insertar(self):
         sql = "INSERT INTO empleados (tipo_identificacion,numero_identificacion,nombre,correo,id_tipo_contrato,fecha_ingreso,fecha_fin_contrato,id_dependencia,id_cargo,salario,id_jefe,es_jefe,estado,creado_por,creado_en) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
-            
+
+        print("en insertar")
+        print(sql, self.tipo_identificacion, self.numero_identificacion, self.nombre, self.correo, self.id_tipo_contrato, self.fecha_ingreso, self.fecha_fin_contrato, self.id_dependencia, self.id_cargo, self.salario, self.id_jefe, self.es_jefe, 'A', self.creado_por, self.creado_en)
+
         afectadas = db.ejecutar_insert(sql, [ self.tipo_identificacion, self.numero_identificacion, self.nombre, self.correo, self.id_tipo_contrato, self.fecha_ingreso, self.fecha_fin_contrato, self.id_dependencia, self.id_cargo, self.salario, self.id_jefe, self.es_jefe, 'A', self.creado_por, self.creado_en ])
         return (afectadas > 0)
 

@@ -2,8 +2,7 @@
 {% block contenido %}
 
 <div class="form-login formulario">
-    <form class="form" method="POST" onsubmit="">
-        <!--<form class="form" action="{{ url_for('login') }}" method="POST">-->
+    <form class="form" action="{{ url_for('crear_empleado') }}" method="POST">
         {{ form.hidden_tag() }}
         
         <h3>Crear empleado</h3>
@@ -26,7 +25,7 @@
         </div>
         <div>
             <div class="control">
-                {{ form.idDependencia(class="control", placeholder="Dependencia") }}
+                {{ form.idDependencia(class="control",placeholder="Dependencia") }}
         </div>
         <div>
             <div class="control">
@@ -38,11 +37,11 @@
         </div>
         <div>
             <div class="control">
-                {{ form.fechaIngreso(class="control", placeholder="Fecha de Ingreso") }}
+                {{ form.fechaIngreso(class="control", type="date", placeholder="Fecha de Ingreso",) }}
         </div>
         <div>
             <div class="control">
-                {{ form.fechaFin(class="control", placeholder="Fecha Fin contrato") }}
+                {{ form.fechaFin(class="control", type="date", placeholder="Fecha Fin contrato") }}
         </div>
         <div>
             <div class="control">
@@ -54,11 +53,12 @@
         </div>
         <div>
             <div class="control">
-                {{ form.esJefe(class="control", placeholder="¿Es Jefe?") }}
+                {{ form.esJefe(class="control", type='checkbox', placeholder="¿Es Jefe?") }}
         </div>
         <div class="button">
             {{ form.registrar(class="button") }}
         </div>
+        
     </form>
     
 </div>

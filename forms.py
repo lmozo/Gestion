@@ -1,4 +1,5 @@
 from datetime import date
+from sqlite3.dbapi2 import Date
 from flask_wtf import FlaskForm
 from werkzeug.utils import ArgumentValidationError
 from wtforms.fields.core import BooleanField, DateField, FloatField, IntegerField, RadioField, SelectField, StringField
@@ -19,16 +20,16 @@ class FormRegistro(FlaskForm):
 class FormEmpleado(FlaskForm):
     tipoIdentificacion = SelectField('Tipo de Identificacion',choices=[('CC', 'Cédula de ciudadanía'),('TI', 'Tarjeta de identidad')],default='CC')
     identificacion = StringField('Número de Identificación',validators=[validators.required(message="Esciba la identificación"),validators.length(max=20)])
-    nombre = StringField('Nombre del Empleado',validators=[validators.required(message="Esciba la identificación"),validators.length(max=50, min=5)])
+    nombre = StringField('Nombre del Empleado',validators=[validators.required(message="Esciba el Nombre del empleado"),validators.length(max=50, min=5)])
     correo = StringField('Correo Electrónico', validators=[validators.required(message="El correo electrónico es obligatorio"),validators.length(max=150)])
     idDependencia = SelectField('Dependencia', validators=[validators.InputRequired(message="La dependencia es obligatoria")])
     idCargo = SelectField('Cargo', validators=[validators.InputRequired(message="El cargo es obligatorio")])
     idTipoContrato = SelectField('Tipo de Contrato', validators=[validators.InputRequired(message="El tipo de contraro es obligatorio")])
     fechaIngreso = DateField('Fecha de Ingreso', validators=[validators.required(message="La fecha de ingreso es requerida")])
-    fechaFin = DateField('Fecha Final del Contrato')
+    fechaFin = DateField('Fecha Final del Contrato', format='%Y-%m-%d')
     salario = FloatField('Salario', validators=[validators.required(message="El salario es requerido")])
     idJefe = SelectField('Jefe')
-    esJefe = BooleanField('¿Es Jefe?', validators=[validators.required(message="Indique si el empleado se desempeñará o no como jefe")])
+    esJefe = BooleanField('¿Es Jefe?')
     registrar = SubmitField("Registrar")
 
 class FormUsuario(FlaskForm):

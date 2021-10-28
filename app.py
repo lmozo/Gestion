@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import os
 import functools
 
@@ -11,7 +11,6 @@ from db import ejecutar_select
 from forms import FormRegistro, FormLogin, FormUsuario, FormEmpleado
 from models import usuario, empleado
 from utils import isPasswordValid
-
 
 app = Flask(__name__)
 
@@ -35,7 +34,7 @@ def login_required(view):
 def cargar_usuario_autenticado():
     user_id = session.get('user_id')
     if user_id is None:
-        g.user = None
+        g.user = 'None'
     else:
         g.user = usuario.cargar(user_id)
 
@@ -120,8 +119,9 @@ def crear_u():
         formulario = FormUsuario(request.form)
         if formulario.validate_on_submit():
             #-con la identificación debo consultar el id del empleado para verificar que exista y no tenga ya usuario asociado y luego instanciar un objeto usuario
+            today = datetime.today()
             obj_usuario = usuario(p_id=0, p_id_empleado = formulario.identificacion.data, p_usuario=formulario.usuario.data,
-            p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
+            p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = g.user.usuario, p_creado_en = today)
 
             #- validar antes de la inserción que no haya ya un registro creado con ese mismo usuario
             if obj_usuario.insertar():
@@ -142,10 +142,10 @@ def editar_u():
     else:
         formulario = FormUsuario(request.form)
         if formulario.validate_on_submit():
+            
             obj_usuario = usuario(p_id=0, p_id_empleado = formulario.identificacion.data, p_login=formulario.usuario.data,
-            p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
+            p_password = None, p_id_rol = formulario.rol.data, p_estado='A', p_creado_por = g.user.usuario, p_creado_en = '2025-10-10')
 
-            #-Debo validar antes de la inserción que no haya ya un registro creado con ese mismo usuario
             if obj_usuario.editar():
                 return render_template("crear_usuario.html", form=FormUsuario(), mensaje= "El usuario ha sido editado.")
             else:
@@ -223,19 +223,55 @@ def crear_empleado():
         return render_template('crear_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
     else:
         formulario = FormEmpleado(request.form)
-        if formulario.validate_on_submit():
+        if formulario.esJefe.data == 'y':
+            formulario.esJefe.data = 1
+        else:
+            formulario.esJefe.data = 0
+
+        print("estoy aqui")
+        print(request.form)
+
+        #if formulario.validate_on_submit():
             #if not isEmailValid(FormEmpleado.correo.data):
                 #mensaje += "El email es inválido. "
 
-            today = datetime.today()
-            obj_empleado = empleado(p_id=0, p_tipo_identificacion = formulario.tipoIdentificacion.data, 
-            p_numero_identificacion = formulario.identificacion.data, p_nombre = formulario.nombre.data,
-            p_id_correo = formulario.idcorreo, p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
-            p_fecha_fin_contrato = formulario.fechaFin.data, p_id_dependencia = formulario.idDependencia.data,
-            p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
-            p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = today)
+        if 0 == 0:
+            print("entró")
+
+            usuario_log = g.get.__name__
+
+            fecha_dia = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            print(fecha_dia)
+            user_id = session.get('user_id')
+            pusuario = usuario.cargar(user_id)
+            print(pusuario.id)
+            
+
+            obj_empleado = empleado(p_id=0, 
+            p_tipo_identificacion = formulario.tipoIdentificacion.data, 
+            p_numero_identificacion = formulario.identificacion.data, 
+            p_nombre = formulario.nombre.data,
+            p_correo = formulario.correo.data, 
+            p_id_tipo_contrato = formulario.idTipoContrato.data,
+            p_fecha_ingreso = formulario.fechaIngreso.data,
+            p_fecha_fin_contrato = formulario.fechaFin.data, 
+            p_id_dependencia = formulario.idDependencia.data,
+            p_id_cargo = formulario.idCargo.data, 
+            p_salario = formulario.salario.data, 
+            p_id_jefe = formulario.idJefe.data, 
+            p_es_jefe = formulario.esJefe.data, 
+            p_estado='A', p_creado_por = pusuario.id , p_creado_en = fecha_dia)
+
+            print(formulario.tipoIdentificacion.data, formulario.identificacion.data)
+            print(formulario.nombre.data, formulario.idTipoContrato.data)
+            print(formulario.fechaIngreso.data,formulario.fechaFin.data)
+            print(formulario.idDependencia.data, formulario.idCargo.data)
+            print(formulario.salario.data,formulario.idJefe.data) 
+            print(formulario.esJefe.data)
+           
 
             dic_empleado = empleado.verificar(obj_empleado)
+            print(dic_empleado)
             if dic_empleado != None:
                 return render_template("crear_empleado.html", form=formulario, mensaje = "La identificación ya está asociada a otro empleado.")
 
@@ -249,7 +285,7 @@ def crear_empleado():
 
 @app.route("/admin_empleados/editar_empleado/", methods=["GET", "POST"])
 @login_required
-def editar_e():
+def editar_empleado():
     if request.method == "GET": 
         formulario = FormEmpleado()
 
@@ -275,33 +311,26 @@ def editar_e():
         for i in contratos:
             lt.append((i["id"],i["descripcion"]))
 
-        formulario.idDependencia.choices = ld
-        print(ld)
-        formulario.idCargo.choices = lc
-        print(lc)
-        formulario.idTipoContrato.choices = lt
-        print(lt)
 
-        return render_template('crear_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
+        return render_template('editar_empleado.html', form = formulario, dependencias=dependencias, cargos=cargos, contratos= contratos)
     else:
         formulario = FormEmpleado(request.form)
         if formulario.validate_on_submit():
-            #if not isEmailValid(FormEmpleado.correo.data):
-                #mensaje += "El email es inválido. "
 
+            today = datetime.today()
             obj_empleado = empleado(p_id=0, p_tipo_identificacion = formulario.tipoIdentificacion.data, 
             p_numero_identificacion = formulario.identificacion.data, p_nombre = formulario.nombre.data,
             p_id_tipo_contrato = formulario.idTipoContrato, p_fecha_ingreso = formulario.fechaIngreso.data,
             p_fecha_fin_contrato = formulario.fechaFin.data, p_id_dependencia = formulario.idDependencia.data,
             p_id_cargo = formulario.idCargo.data, p_salario = formulario.salario.data, p_id_jefe = formulario.idJefe.data, 
-            p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = 'admin', p_creado_en = '2021-10-25')
+            p_es_jefe = formulario.esJefe.data, p_estado='A', p_creado_por = g.user.usuario, p_creado_en = today)
 
-            if obj_empleado.insertar(obj_empleado):
-                return render_template("crear_empleado.html", form=FormEmpleado(), mensaje= "El empleado ha sido creado.")
+            if obj_empleado.editar(obj_empleado):
+                return render_template("editar_empleado.html", form=FormEmpleado(), mensaje= "El empleado ha sido editado.")
             else:
-                return render_template("crear_empleado.html", form=formulario, mensaje= "No fue posible crear el empleado, consulte a soporte técnico.")
+                return render_template("crear_empleado.html", form=formulario, mensaje= "No fue posible editar el empleado, consulte a soporte técnico.")
 
-        return render_template("crear_empleado.html", form=formulario, mensaje = "Todos los datos son requeridos.")
+        return render_template("editar.html", form=formulario, mensaje = "Todos los datos son requeridos.")
 
 
 @app.route("/admin_empleados/consultar_empleado/")
